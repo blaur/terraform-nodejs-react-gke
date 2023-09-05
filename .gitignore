@@ -24,6 +24,7 @@ desktop.ini
 *.tfstate.backup
 *.tfvars
 terraform/dev/.terraform/**
+terraform/dev/.terraform.lock.hcl
 
 npm-debug.log*
 yarn-debug.log*
