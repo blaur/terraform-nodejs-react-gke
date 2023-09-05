@@ -2,6 +2,41 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Apollo Client and GraphQL
+The frontend communicates through a GraphQL API.
+
+It is initialized in index.tsx like this:
+```
+const API_URL = process.env.API_URL || 'http://localhost:3000/graphql';
+
+// Initializing the client
+const client = new ApolloClient({
+  uri: API_URL,
+  cache: new InMemoryCache(),
+});
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
+root.render(
+  <React.StrictMode>
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
+  </React.StrictMode>
+);
+```
+
+In App.tsx, the code will fetch a NicenessModel by Id and show it. The backend will auto-generate one and therefore id "1" will always be present.
+
+```
+const { loading, error, data } = useQuery<NicenessModelRes>(GET_NICENESS_BY_ID, {
+    variables: {
+      id: "1"
+    }
+});
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
