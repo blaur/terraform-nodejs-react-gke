@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${project_name}-service
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+spec:
+  type: NodePort
+  selector:
+    app: ${project_name}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${project_name}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${project_name}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: ${project_name}
+    spec:
+      containers:
+      - name: ${project_name}
+        # Replace $LOCATION with your Artifact Registry location (e.g., us-west1).
+        # Replace $GCLOUD_PROJECT with your project ID.
+        image: ${image_url}
+        # This app listens on port 3000 for web traffic by default.
+        ports:
+            - containerPort: 3000
+              protocol: TCP
+        readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+        env:
+            - name: NODE_ENV
+              value: 'production'
+            - name: PORT
+              value: '3000'
+            - name: PGHOST
+              value: '${db_host}'
+            - name: PGPORT
+              value: '${db_port}'
+            - name: PGDATABASE
+              value: '${db_name}'
+            - name: PGUSER
+              value: '${db_username}'
+            - name: PGPASSWORD
+              value: '${db_password}'
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+            ephemeral-storage: "1Gi"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+            ephemeral-storage: "1Gi"
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ${project_name}-ingress
+spec:
+  defaultBackend:
+    service:
+      name: ${project_name}
+      port:
+        number: 80
