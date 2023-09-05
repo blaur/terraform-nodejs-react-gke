@@ -13,20 +13,24 @@ Simple node backend using TypeScript. It expose a GraphQL API using Apollo which
 
 Build your docker image. The terraform will define the URL pattern for the image in the container registry (google_container_registry_image -> stooks-gke-${var.env}) which wil lbe output as the project name.
 
-`docker build . -t gcr.io/${PROJECT_ID}/{project_name}:v1`
-`gcloud builds submit --tag gcr.io/${PROJECT_ID}/{project_name}:v1 .`
+1. `docker build . -t gcr.io/${PROJECT_ID}/{project_name}:v1`
+2. `gcloud builds submit --tag gcr.io/${PROJECT_ID}/{project_name}:v1 .`
+
+If you wish to run it locally, then go to: Read more [here](./apps/backend/README.md). Requirements is to have postgres database running locally.
 
 # Frontend
 Simple react frontend using TypeScript. It communicates with the backend using GraphQL. As with the backend, the terraform defines will output the image url to use.
 
-`docker build . -t gcr.io/${PROJECT_ID}/{project_name}-frontend:v1`
-`gcloud builds submit --tag gcr.io/${PROJECT_ID}/{project_name}-frontend:v1 .`
+1. `docker build . -t gcr.io/${PROJECT_ID}/{project_name}-frontend:v1`
+2. `gcloud builds submit --tag gcr.io/${PROJECT_ID}/{project_name}-frontend:v1 .`
+
+If you wish to run it locally, then go to: Read more [here](./apps/frontend/README.md).
 
 # Deployment
 
 ## Requirements
 1. Create a Google Cloud Project
-2. Enable all the necessary Google Cloud APIs such as compute, container registry, cloud sql and so on.
+2. Enable all the necessary Google Cloud APIs such as compute, container registry, cloud sql and storage. Google will let you know if you forgot anything so don't worry.
 
 ## How-to Deploy to GKE
 
@@ -43,18 +47,18 @@ In the project directory, you can run:
 5. Authenticate kubectl: `gcloud container clusters get-credentials $(terraform output cluster_name) --zone=$(terraform output cluster_zone)`
 
 ### Deploy backend
-1. Render Kubernetes config template: terraform output k8s_rendered_template_backend > backendk8s.yml
-2. Update Kubernetes resources: kubectl apply -f backendk8s.yml
-3. Get direct ip address with: kubectl get ingress stooks-gke-dev-ingress
+1. Render Kubernetes config template: `terraform output k8s_rendered_template_backend > backendk8s.yml`
+2. Update Kubernetes resources: `kubectl apply -f backendk8s.yml`
+3. Get direct ip address with: `kubectl get ingress stooks-gke-dev-ingress`
 
 ### Deploy frontend 
-1. Render Kubernetes config template: terraform output k8s_rendered_template_frontend > frontendk8s.yml
-2. Update Kubernetes resources: kubectl apply -f frontendk8s.yml
-3. Get direct ip address with: kubectl get ingress stooks-gke-dev-frontend-ingress
+1. Render Kubernetes config template: `terraform output k8s_rendered_template_frontend > frontendk8s.yml`
+2. Update Kubernetes resources: `kubectl apply -f frontendk8s.yml`
+3. Get direct ip address with: `kubectl get ingress stooks-gke-dev-frontend-ingress`
 
 To get direct IP addresses:
-1. kubectl get ingress stooks-gke-dev-ingress
-2. kubectl get ingress stooks-gke-frontend-dev
+1. `kubectl get ingress stooks-gke-dev-ingress`
+2. `kubectl get ingress stooks-gke-frontend-dev`
 
 ## Inspiration
 
