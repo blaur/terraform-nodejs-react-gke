@@ -13,14 +13,14 @@ Simple node backend using TypeScript. It expose a GraphQL API using Apollo which
 
 Build your docker image. The terraform will define the URL pattern for the image in the container registry (google_container_registry_image -> stooks-gke-${var.env}) which wil lbe output as the project name.
 
-docker build . -t gcr.io/${PROJECT_ID}/{project_name}:v1
-gcloud builds submit --tag gcr.io/${PROJECT_ID}/{project_name}:v1 .
+`docker build . -t gcr.io/${PROJECT_ID}/{project_name}:v1`
+`gcloud builds submit --tag gcr.io/${PROJECT_ID}/{project_name}:v1 .`
 
 # Frontend
 Simple react frontend using TypeScript. It communicates with the backend using GraphQL. As with the backend, the terraform defines will output the image url to use.
 
-docker build . -t gcr.io/${PROJECT_ID}/{project_name}-frontend:v1
-gcloud builds submit --tag gcr.io/${PROJECT_ID}/{project_name}-frontend:v1 .
+`docker build . -t gcr.io/${PROJECT_ID}/{project_name}-frontend:v1`
+`gcloud builds submit --tag gcr.io/${PROJECT_ID}/{project_name}-frontend:v1 .`
 
 # Deployment
 
@@ -35,12 +35,12 @@ In the project directory, you can run:
 1. Install all necessary tools: terraform, gcloud and kubectl
 2. Authenticate with Google Cloud: gcloud auth application-default login
 3. Create the infrastructure with terraform: 
-    - cd terraform/dev && terraform init && terraform apply
+    - `cd terraform/dev && terraform init && terraform apply`
 4. Follow the guides for Frontend and Backend above to build and push docker images.
-    - cd apps/frontend and apps/backend
-    - docker build -t gcr.io/${PROJECT_ID}/.....:v1 .
-    - gcloud docker -- push gcr.io/${PROJECT_ID}/......
-5. Authenticate kubectl: gcloud container clusters get-credentials $(terraform output cluster_name) --zone=$(terraform output cluster_zone)
+    - `cd apps/frontend and apps/backend`
+    - `docker build -t gcr.io/${PROJECT_ID}/.....:v1 .`
+    - `gcloud docker -- push gcr.io/${PROJECT_ID}/......`
+5. Authenticate kubectl: `gcloud container clusters get-credentials $(terraform output cluster_name) --zone=$(terraform output cluster_zone)`
 
 ### Deploy backend
 1. Render Kubernetes config template: terraform output k8s_rendered_template_backend > backendk8s.yml
